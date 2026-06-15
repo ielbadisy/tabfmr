@@ -33,7 +33,6 @@ tab_icl.data.frame <- function(
   control = control_tab_icl(),
   ...
 ) {
-  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
   processed <- hardhat::mold(x, y)
   processed <- limit_training_set(processed, training_set_limit)
   tab_icl_bridge(processed, control, ...)
@@ -48,7 +47,6 @@ tab_icl.matrix <- function(
   control = control_tab_icl(),
   ...
 ) {
-  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
   processed <- hardhat::mold(x, y)
   processed <- limit_training_set(processed, training_set_limit)
   tab_icl_bridge(processed, control, ...)
@@ -63,7 +61,6 @@ tab_icl.formula <- function(
   control = control_tab_icl(),
   ...
 ) {
-  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
   bp <- hardhat::default_formula_blueprint(
     intercept = FALSE,
     allow_novel_levels = FALSE,
@@ -84,13 +81,13 @@ tab_icl.recipe <- function(
   control = control_tab_icl(),
   ...
 ) {
-  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
   processed <- hardhat::mold(x, data)
   processed <- limit_training_set(processed, training_set_limit)
   tab_icl_bridge(processed, control, ...)
 }
 
 limit_training_set <- function(processed, training_set_limit) {
+  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
   tr_ind <- sample_indicies(processed, size_limit = training_set_limit)
   if (length(tr_ind) > 0) {
     processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
