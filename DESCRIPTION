@@ -1,0 +1,41 @@
+Package: tabfm
+Title: Foundation Model Wrappers for Tabular Data in R
+Version: 0.2.0.9000
+Authors@R: c(
+    person("Max", "Kuhn", , "max@posit.co", role = "aut",
+           comment = c(ORCID = "0000-0003-2402-136X")),
+    person("Imad", "El Badisy", , "ielbadisy@users.noreply.github.com", role = c("aut", "cre")),
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+           comment = c(ROR = "03wc8by49"))
+  )
+Description: Provides a consistent R API for classification and regression with
+    tabular foundation models, including 'TabPFN' and 'TabICLv2'. The
+    calculations are served via 'Python' through 'reticulate'.
+License: Apache License (>= 2)
+URL: https://github.com/ielbadisy/tabfm
+BugReports: https://github.com/ielbadisy/tabfm/issues
+Depends: 
+    R (>= 4.1.0)
+Imports: 
+    cli,
+    dplyr,
+    generics,
+    hardhat,
+    purrr,
+    reticulate (>= 1.41.0.1),
+    rlang (>= 1.1.0),
+    tibble
+Suggests: 
+    covr,
+    modeldata,
+    recipes,
+    spelling,
+    testthat (>= 3.0.0),
+    withr
+Config/Needs/website: tidyverse/tidytemplate
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3
