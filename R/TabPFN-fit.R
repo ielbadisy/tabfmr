@@ -305,21 +305,15 @@ tab_pfn.data.frame <- function(
   control = control_tab_pfn(),
   ...
 ) {
-  options <- control
-  options$n_estimators <- num_estimators
-  options$softmax_temperature <- softmax_temperature
-  options$balance_probabilities <- balance_probabilities
-  options$average_before_softmax <- average_before_softmax
-  options <- check_fit_args(options)
-  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
-
   processed <- hardhat::mold(x, y)
-  tr_ind <- sample_indicies(processed, size_limit = training_set_limit)
-  if (length(tr_ind) > 0) {
-    processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
-    processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
-  }
-
+  processed <- limit_training_set(processed, training_set_limit)
+  options <- tab_pfn_options(
+    control,
+    num_estimators = num_estimators,
+    softmax_temperature = softmax_temperature,
+    balance_probabilities = balance_probabilities,
+    average_before_softmax = average_before_softmax
+  )
   tab_pfn_bridge(processed, options, version = version, ...)
 }
 
@@ -339,21 +333,15 @@ tab_pfn.matrix <- function(
   control = control_tab_pfn(),
   ...
 ) {
-  options <- control
-  options$n_estimators <- num_estimators
-  options$softmax_temperature <- softmax_temperature
-  options$balance_probabilities <- balance_probabilities
-  options$average_before_softmax <- average_before_softmax
-  options <- check_fit_args(options)
-  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
-
   processed <- hardhat::mold(x, y)
-  tr_ind <- sample_indicies(processed, size_limit = training_set_limit)
-  if (length(tr_ind) > 0) {
-    processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
-    processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
-  }
-
+  processed <- limit_training_set(processed, training_set_limit)
+  options <- tab_pfn_options(
+    control,
+    num_estimators = num_estimators,
+    softmax_temperature = softmax_temperature,
+    balance_probabilities = balance_probabilities,
+    average_before_softmax = average_before_softmax
+  )
   tab_pfn_bridge(processed, options, version = version, ...)
 }
 
@@ -373,15 +361,7 @@ tab_pfn.formula <- function(
   control = control_tab_pfn(),
   ...
 ) {
-  options <- control
-  options$n_estimators <- num_estimators
-  options$softmax_temperature <- softmax_temperature
-  options$balance_probabilities <- balance_probabilities
-  options$average_before_softmax <- average_before_softmax
-  options <- check_fit_args(options)
-  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
-
-  # No not convert factors to indicators:
+  # Do not convert factors to indicators:
   bp <- hardhat::default_formula_blueprint(
     intercept = FALSE,
     allow_novel_levels = FALSE,
@@ -389,12 +369,14 @@ tab_pfn.formula <- function(
     composition = "tibble"
   )
   processed <- hardhat::mold(formula, data, blueprint = bp)
-  tr_ind <- sample_indicies(processed, size_limit = training_set_limit)
-  if (length(tr_ind) > 0) {
-    processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
-    processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
-  }
-
+  processed <- limit_training_set(processed, training_set_limit)
+  options <- tab_pfn_options(
+    control,
+    num_estimators = num_estimators,
+    softmax_temperature = softmax_temperature,
+    balance_probabilities = balance_probabilities,
+    average_before_softmax = average_before_softmax
+  )
   tab_pfn_bridge(processed, options, version = version, ...)
 }
 
@@ -414,22 +396,31 @@ tab_pfn.recipe <- function(
   control = control_tab_pfn(),
   ...
 ) {
+  processed <- hardhat::mold(x, data)
+  processed <- limit_training_set(processed, training_set_limit)
+  options <- tab_pfn_options(
+    control,
+    num_estimators = num_estimators,
+    softmax_temperature = softmax_temperature,
+    balance_probabilities = balance_probabilities,
+    average_before_softmax = average_before_softmax
+  )
+  tab_pfn_bridge(processed, options, version = version, ...)
+}
+
+tab_pfn_options <- function(
+  control,
+  num_estimators,
+  softmax_temperature,
+  balance_probabilities,
+  average_before_softmax
+) {
   options <- control
   options$n_estimators <- num_estimators
   options$softmax_temperature <- softmax_temperature
   options$balance_probabilities <- balance_probabilities
   options$average_before_softmax <- average_before_softmax
-  options <- check_fit_args(options)
-  check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
-
-  processed <- hardhat::mold(x, data)
-  tr_ind <- sample_indicies(processed, size_limit = training_set_limit)
-  if (length(tr_ind) > 0) {
-    processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
-    processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
-  }
-
-  tab_pfn_bridge(processed, options, version = version, ...)
+  check_fit_args(options)
 }
 
 # ------------------------------------------------------------------------------
